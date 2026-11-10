@@ -25,6 +25,10 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
+from console import ensure_utf8_stdout
+
+ensure_utf8_stdout()
+
 DATA_DIR = Path(__file__).parent / "data"
 
 
@@ -255,11 +259,75 @@ QUERY_SALES_SCHEMA = {  # Format OpenAI; Gemini adapter convert ở llm.py
 
 
 # ---------------------------------------------------------------------------
+# TOOL 3 — EXCHANGE RATE: get_exchange_rate(from_currency, to_currency)
+# ---------------------------------------------------------------------------
+# Bài tập mở rộng số 1 (README): tool thứ 3, dùng để thử pattern parallel
+# fetch + merge (gọi cùng lúc với get_weather trong một lượt).
+# Bảng tỷ giá OFFLINE, cố định để test tất định. Đơn vị: VND cho 1 đơn vị ngoại tệ.
+_FX_TO_VND = {"USD": 25400, "EUR": 27600, "JPY": 165, "VND": 1}
+
+
+def get_exchange_rate(from_currency: str, to_currency: str) -> dict:
+    """Tỷ giá: 1 đơn vị `from_currency` = bao nhiêu `to_currency`."""
+    f = (from_currency or "").strip().upper()
+    t = (to_currency or "").strip().upper()
+    if not f or not t:
+        return {
+            "status": "error",
+            "message": "Thiếu tham số 'from_currency' hoặc 'to_currency'.",
+            "code": "MISSING_ARGUMENT",
+        }
+    for code in (f, t):
+        if code not in _FX_TO_VND:
+            return {
+                "status": "error",
+                "message": f"Mã tiền tệ '{code}' không hỗ trợ. Chọn một trong {sorted(_FX_TO_VND)}.",
+                "code": "INVALID_ARGUMENT",
+            }
+    rate = _FX_TO_VND[f] / _FX_TO_VND[t]
+    return {
+        "status": "success",
+        "data": {"from": f, "to": t, "rate": round(rate, 6)},
+        "source": "fx-offline-table",
+    }
+
+
+GET_EXCHANGE_RATE_SCHEMA = {
+    "type": "function",
+    "function": {
+        "name": "get_exchange_rate",
+        "description": (
+            "Lấy tỷ giá giữa hai đơn vị tiền tệ (USD, EUR, JPY, VND). Dùng KHI người "
+            "dùng hỏi tỷ giá hoặc muốn đổi từ loại tiền này sang loại tiền khác. "
+            "KHÔNG dùng cho giá tiền điện tử, dự báo tỷ giá, hay lời khuyên đầu tư."
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "from_currency": {
+                    "type": "string",
+                    "description": "Mã tiền tệ nguồn, ví dụ 'USD'.",
+                    "enum": ["USD", "EUR", "JPY", "VND"],
+                },
+                "to_currency": {
+                    "type": "string",
+                    "description": "Mã tiền tệ đích, ví dụ 'VND'.",
+                    "enum": ["USD", "EUR", "JPY", "VND"],
+                },
+            },
+            "required": ["from_currency", "to_currency"],
+        },
+    },
+}
+
+
+# ---------------------------------------------------------------------------
 # TOOL REGISTRY — nối tên tool -> (schema, hàm thực thi)
 # ---------------------------------------------------------------------------
 TOOLS = {
     "get_weather": {"schema": GET_WEATHER_SCHEMA, "fn": get_weather},
     "query_sales": {"schema": QUERY_SALES_SCHEMA, "fn": query_sales},
+    "get_exchange_rate": {"schema": GET_EXCHANGE_RATE_SCHEMA, "fn": get_exchange_rate},
 }
 
 

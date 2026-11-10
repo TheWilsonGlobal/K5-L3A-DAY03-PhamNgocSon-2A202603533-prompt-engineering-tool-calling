@@ -1,0 +1,38 @@
+[ORIGINAL] P1 dự báo nhiều ngày run 1: không gọi
+[ORIGINAL] P1 dự báo nhiều ngày run 2: không gọi
+[ORIGINAL] P1 dự báo nhiều ngày run 3: không gọi
+[ORIGINAL] P2 thiếu thành phố run 1: không gọi
+[ORIGINAL] P2 thiếu thành phố run 2: không gọi
+[ORIGINAL] P2 thiếu thành phố run 3: không gọi
+[ORIGINAL] P3 chung chung run 1: không gọi
+[ORIGINAL] P3 chung chung run 2: không gọi
+[ORIGINAL] P3 chung chung run 3: không gọi
+[ORIGINAL] P4 đủ thông tin run 1: GỌI ['Hà Nội']
+[ORIGINAL] P4 đủ thông tin run 2: GỌI ['Hà Nội']
+[ORIGINAL] P4 đủ thông tin run 3: GỌI ['Hà Nội']
+[BROKEN] P1 dự báo nhiều ngày run 1: không gọi
+[BROKEN] P1 dự báo nhiều ngày run 2: không gọi
+[BROKEN] P1 dự báo nhiều ngày run 3: không gọi
+[BROKEN] P2 thiếu thành phố run 1: không gọi
+[BROKEN] P2 thiếu thành phố run 2: không gọi
+[BROKEN] P2 thiếu thành phố run 3: không gọi
+[BROKEN] P3 chung chung run 1: không gọi
+[BROKEN] P3 chung chung run 2: không gọi
+[BROKEN] P3 chung chung run 3: không gọi
+[BROKEN] P4 đủ thông tin run 1: GỌI ['Hà Nội']
+[BROKEN] P4 đủ thông tin run 2: GỌI ['Hà Nội']
+[BROKEN] P4 đủ thông tin run 3: GỌI ['Hà Nội']
+
+======================================================================
+MODEL: gemini
+
+  P1 dự báo nhiều ngày | ORIGINAL                    gọi 0/3   đúng kỳ vọng 3/3
+  P2 thiếu thành phố | ORIGINAL                      gọi 0/3   đúng kỳ vọng 3/3
+  P3 chung chung | ORIGINAL                          gọi 0/3   đúng kỳ vọng 3/3
+  P4 đủ thông tin | ORIGINAL                         gọi 3/3   đúng kỳ vọng 3/3
+  P1 dự báo nhiều ngày | BROKEN                      gọi 0/3   đúng kỳ vọng 3/3
+  P2 thiếu thành phố | BROKEN                        gọi 0/3   đúng kỳ vọng 3/3
+  P3 chung chung | BROKEN                            gọi 0/3   đúng kỳ vọng 3/3
+  P4 đủ thông tin | BROKEN                           gọi 3/3   đúng kỳ vọng 3/3
+
+Đã lưu: C:\Git\ACAs\VIN-AIA-SRC\Lab\K5-L3A-DAY03-PhamNgocSon-2A202603533-prompt-engineering-tool-calling\results\description-probe-gemini-2026-11-10.json

@@ -1,0 +1,62 @@
+Review test: "Pin trâu dùng 2 ngày, nhưng màn hình hơi tối và loa nhỏ."
+
+======================================================================
+1. PROMPT-ONLY  —  Chỉ dùng instruction trong prompt
+----------------------------------------------------------------------
+{
+  "sentiment": "trung lập",
+  "confidence": 0.8,
+  "keywords": [
+    "pin trâu",
+    "màn hình hơi tối",
+    "loa nhỏ"
+  ]
+}
+
+======================================================================
+2. MIME-TYPE  —  response_mime_type='application/json'
+----------------------------------------------------------------------
+{
+  "sentiment": "trung lập",
+  "confidence": 0.85,
+  "keywords": [
+    "Pin trâu",
+    "màn hình hơi tối",
+    "loa nhỏ"
+  ]
+}
+
+======================================================================
+3. SCHEMA  —  response_schema=types.Schema(...)
+----------------------------------------------------------------------
+{
+  "sentiment": "trung lập",
+  "confidence": 0.85,
+  "keywords": [
+    "Pin trâu",
+    "hơi tối",
+    "loa nhỏ"
+  ]
+}
+
+======================================================================
+4. PYDANTIC  —  response_schema=PydanticModel
+----------------------------------------------------------------------
+{
+  "sentiment": "trung lập",
+  "confidence": 0.85,
+  "keywords": [
+    "Pin trâu",
+    "màn hình hơi tối",
+    "loa nhỏ"
+  ]
+}
+parsed OK: sentiment=trung lập
+
+======================================================================
+So sánh:
+  1. Prompt-only  → đơn giản, nhưng output có thể lẫn text/markdown thừa.
+  2. Mime-type    → ép raw JSON, nhưng không đảm bảo đúng field/type.
+  3. Schema       → đảm bảo đúng cấu trúc, nhưng viết schema thủ công.
+  4. Pydantic     → đảm bảo đúng cấu trúc + parse thành Python object,
+                    code ngắn gọn, dễ maintain nhất.

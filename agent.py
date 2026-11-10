@@ -20,9 +20,12 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass, field
 
+from console import ensure_utf8_stdout
 from llm import MockModel
 from system_prompt import SYSTEM_PROMPT
 from tools import execute_tool, tool_schemas
+
+ensure_utf8_stdout()
 
 
 @dataclass
@@ -31,6 +34,7 @@ class Trace:
     user_msg: str
     steps: list[str] = field(default_factory=list)
     tool_calls: list[str] = field(default_factory=list)
+    tool_args: list[dict] = field(default_factory=list)  # arguments tương ứng với tool_calls
     final_reply: str = ""
 
     def log(self, msg: str) -> None:
@@ -57,18 +61,22 @@ def run_agent(user_msg: str, model=None, system_prompt: str = SYSTEM_PROMPT,
     step = 0
     while resp.wants_tool and step < max_steps:
         step += 1
+        # --- Bước 2+3: App executes MỌI tool call của lượt này ---
+        # Gom tất cả kết quả trước, rồi mới feed lại model MỘT lần. Nếu ghi đè
+        # `resp` ngay trong vòng for (bản cũ) thì câu trả lời chỉ còn phản ánh
+        # tool cuối cùng — xem LỖI 4 trong demo_errors.py.
+        results: list[tuple[str, dict]] = []
         for call in resp.tool_calls:
             trace.log(f"[decide] model muốn gọi tool: {call.name}({call.arguments})")
             trace.tool_calls.append(call.name)
-
-            # --- Bước 2+3: App executes tool -> tool result ---
+            trace.tool_args.append(dict(call.arguments))
             result = execute_tool(call.name, call.arguments)
             trace.log(f"[execute] {call.name} -> {json.dumps(result, ensure_ascii=False)}")
+            results.append((call.name, result))
 
-            # --- Bước 4: feed tool result trở lại model -> final response ---
-            # (Quên bước này = LỖI CONTROL FLOW, xem demo_errors.py)
-            resp = model.summarize_tool_result(call.name, result, user_msg)
-        # MockModel chỉ gọi 1 tool/câu nên vòng lặp kết thúc sau lần feed đầu.
+        # --- Bước 4: feed tool result trở lại model -> final response ---
+        # (Quên bước này = LỖI CONTROL FLOW, xem demo_errors.py)
+        resp = model.summarize_tool_results(results, user_msg)
 
     # --- Trả lời trực tiếp hoặc kết quả cuối ---
     if not trace.called_tool:

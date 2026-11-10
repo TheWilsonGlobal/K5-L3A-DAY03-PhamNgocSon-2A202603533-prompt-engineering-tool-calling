@@ -1,0 +1,128 @@
+
+======================================================================
+Review: "Sản phẩm này dùng tạm được, không có gì đặc biệt."
+----------------------------------------------------------------------
+  ZERO-SHOT        → trung lập
+  ONE-SHOT         → trung lập
+  FEW-SHOT         → trung lập
+  ZERO-SHOT-COT:
+    Dưới đây là các bước phân tích và phân loại câu review:
+    
+    1. **Liệt kê các từ/cụm từ mang cảm xúc trong câu review:**
+       - "dùng tạm được" (thể hiện mức độ trung bình, chấp nhận được chứ không quá khen).
+       - "không có gì đặc biệt" (thể hiện sự bình thường, không ấn tượng tốt cũng không chê bai).
+    
+    2. **Đánh giá cảm xúc tổng thể:**
+       - Cảm xúc của người viết không hào hứng, khen ngợi (không phải tích cực), nhưng cũng không bực bội, chê trách hay phàn nàn (không phải tiêu cực). 
+       - Cảm giác chung là bình thường, ở mức trung bình, do đó cảm xúc mang tính cân bằng/trung lập.
+    
+    3. **Đưa ra nhãn cuối cùng:**
+       - trung lập
+  FEW-SHOT-COT:
+    - Từ tích cực: "dùng tạm được"
+    - Từ tiêu cực: "không có gì đặc biệt"
+    - Tổng thể: đánh giá ở mức bình thường, không quá khen cũng không chê bai
+    Nhãn: trung lập
+
+======================================================================
+Review: "Giao hàng quá chậm, đợi 2 tuần mới nhận được."
+----------------------------------------------------------------------
+  ZERO-SHOT        → tiêu cực
+  ONE-SHOT         → tiêu cực
+  FEW-SHOT         → tiêu cực
+  ZERO-SHOT-COT:
+    1. Các từ/cụm từ mang cảm xúc trong câu review: 
+    - "quá chậm" (thể hiện sự bất mãn, tiêu cực về tốc độ giao hàng)
+    - "đợi 2 tuần mới nhận được" (nhấn mạnh khoảng thời gian chờ đợi lâu, gây khó chịu)
+    
+    2. Đánh giá cảm xúc tổng thể: 
+    Cảm xúc nghiêng hẳn về phía không hài lòng, phàn nàn về dịch vụ giao hàng. Không có yếu tố tích cực nào trong câu.
+    
+    3. Nhãn cuối cùng: 
+    tiêu cực
+  FEW-SHOT-COT:
+    - Từ tích cực: không có
+    - Từ tiêu cực: "quá chậm", "đợi 2 tuần mới nhận được"
+    - Tổng thể: hoàn toàn tiêu cực
+    Nhãn: tiêu cực
+
+======================================================================
+Review: "Pin trâu, màn hình đẹp, dùng rất thích!"
+----------------------------------------------------------------------
+  ZERO-SHOT        → tích cực
+  ONE-SHOT         → tích cực
+  FEW-SHOT         → tích cực
+  ZERO-SHOT-COT:
+    Dưới đây là phân tích từng bước cho câu review: "Pin trâu, màn hình đẹp, dùng rất thích!"
+    
+    1. **Liệt kê các từ/cụm từ mang cảm xúc trong câu review:**
+       - "Pin trâu" (ý chỉ thời lượng pin rất tốt, khỏe).
+       - "màn hình đẹp" (khen ngợi chất lượng hiển thị).
+       - "rất thích" (thể hiện sự hài lòng cao độ của người dùng).
+    
+    2. **Đánh giá cảm xúc tổng thể:**
+       - Tất cả các từ/cụm từ được liệt kê đều mang ý nghĩa khen ngợi và hài lòng. Không có bất kỳ từ ngữ tiêu cực hay trung lập nào. Cảm xúc tổng thể hoàn toàn nghiêng về phía tích cực.
+    
+    3. **Đưa ra nhãn cuối cùng:**
+       - **tích cực**
+  FEW-SHOT-COT:
+    - Từ tích cực: "Pin trâu", "màn hình đẹp", "dùng rất thích"
+    - Từ tiêu cực: không có
+    - Tổng thể: hoàn toàn tích cực
+    Nhãn: tích cực
+
+======================================================================
+Review: "Mua về chưa mở hộp, chưa biết chất lượng thế nào."
+----------------------------------------------------------------------
+  ZERO-SHOT        → trung lập
+  ONE-SHOT         → trung lập
+  FEW-SHOT         → trung lập
+  ZERO-SHOT-COT:
+    1. Liệt kê các từ/cụm từ mang cảm xúc trong câu review:
+    - "chưa mở hộp"
+    - "chưa biết chất lượng thế nào"
+    (Các cụm từ này mang tính chất thông báo tình trạng thực tế của sản phẩm tại thời điểm đánh giá, không chứa từ ngữ biểu lộ cảm xúc khen hay chê).
+    
+    2. Đánh giá cảm xúc tổng thể: 
+    - Người mua chỉ đang phản ánh sự thật là họ chưa sử dụng sản phẩm nên không có đánh giá về chất lượng. Cảm xúc tổng thể là không nghiêng về tích cực cũng không tiêu cực (cân bằng/trung tính).
+    
+    3. Đưa ra nhãn cuối cùng:
+    trung lập
+  FEW-SHOT-COT:
+    - Từ tích cực: không có
+    - Từ tiêu cực: không có
+    - Tổng thể: người mua chưa sử dụng sản phẩm nên không có đánh giá về chất lượng, chỉ mang tính chất thông tin khách quan
+    Nhãn: trung lập
+
+======================================================================
+Review: "Sản phẩm thiết kế đẹp nhưng đợi 2 tuần mới nhận được hàng."
+----------------------------------------------------------------------
+  ZERO-SHOT        → trung lập
+  ONE-SHOT         → trung lập
+  FEW-SHOT         → trung lập
+  ZERO-SHOT-COT:
+    Dưới đây là phần phân tích theo từng bước đối với câu review: "Sản phẩm thiết kế đẹp nhưng đợi 2 tuần mới nhận được hàng."
+    
+    1. **Liệt kê các từ/cụm từ mang cảm xúc trong câu review:**
+       * "thiết kế đẹp": mang sắc thái tích cực (khen ngợi ngoại hình sản phẩm).
+       * "đợi 2 tuần mới nhận được hàng": mang sắc thái tiêu cực (phàn nàn về thời gian giao hàng quá lâu).
+       * Từ nối "nhưng": dùng để chuyển ý, đặt trọng tâm đánh giá sang vế phía sau.
+    
+    2. **Đánh giá cảm xúc tổng thể:**
+       * Câu review chứa cả ý khen (thiết kế) và ý chê (vận chuyển). Tuy nhiên, trong văn phong đánh giá, cấu trúc "[ý tốt] + nhưng + [ý chưa tốt]" thường hướng sự không hài lòng của khách hàng vào trải nghiệm chung, và thời gian chờ đợi quá lâu (2 tuần) là một điểm trừ lớn về mặt dịch vụ. Do đó, cảm xúc tiêu cực chiếm ưu thế hơn vì sự chậm trễ này làm giảm đi trải nghiệm mua sắm.
+    
+    3. **Đưa ra nhãn cuối cùng:**
+       * tiêu cực
+  FEW-SHOT-COT:
+    - Từ tích cực: "thiết kế đẹp"
+    - Từ tiêu cực: "đợi 2 tuần mới nhận được hàng"
+    - Tổng thể: có sự kết hợp giữa khen (thiết kế) và chê (giao hàng chậm), cân bằng giữa các yếu tố
+    Nhãn: trung lập
+
+======================================================================
+Ghi chú:
+  - Zero-shot:     không ví dụ → nhanh, ít token, format có thể bất nhất.
+  - One-shot:      1 ví dụ → model hiểu format, chưa thấy hết các nhãn.
+  - Few-shot:      3 ví dụ → model thấy cả 3 nhãn, kết quả nhất quán.
+  - Zero-shot CoT: thêm 'suy nghĩ từng bước' → suy luận tốt hơn, không cần ví dụ.
+  - Few-shot CoT:  ví dụ KÈM lập luận → nhất quán nhất cho câu mixed/mơ hồ.

@@ -1,0 +1,303 @@
+{
+  "model_label": "gemini",
+  "model": "gemini-3.5-flash-lite",
+  "is_real_model": true,
+  "date": "2026-11-10",
+  "runs": 3,
+  "summary": {
+    "P1 dự báo nhiều ngày | ORIGINAL": {
+      "calls": 0,
+      "runs": 3,
+      "matches_expect": 3
+    },
+    "P2 thiếu thành phố | ORIGINAL": {
+      "calls": 0,
+      "runs": 3,
+      "matches_expect": 3
+    },
+    "P3 chung chung | ORIGINAL": {
+      "calls": 0,
+      "runs": 3,
+      "matches_expect": 3
+    },
+    "P4 đủ thông tin | ORIGINAL": {
+      "calls": 3,
+      "runs": 3,
+      "matches_expect": 3
+    },
+    "P1 dự báo nhiều ngày | BROKEN": {
+      "calls": 0,
+      "runs": 3,
+      "matches_expect": 3
+    },
+    "P2 thiếu thành phố | BROKEN": {
+      "calls": 0,
+      "runs": 3,
+      "matches_expect": 3
+    },
+    "P3 chung chung | BROKEN": {
+      "calls": 0,
+      "runs": 3,
+      "matches_expect": 3
+    },
+    "P4 đủ thông tin | BROKEN": {
+      "calls": 3,
+      "runs": 3,
+      "matches_expect": 3
+    }
+  },
+  "rows": [
+    {
+      "variant": "ORIGINAL",
+      "probe": "P1 dự báo nhiều ngày",
+      "question": "Dự báo thời tiết Đà Nẵng cả tuần tới thế nào?",
+      "expect_call": false,
+      "run": 1,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "ORIGINAL",
+      "probe": "P1 dự báo nhiều ngày",
+      "question": "Dự báo thời tiết Đà Nẵng cả tuần tới thế nào?",
+      "expect_call": false,
+      "run": 2,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "ORIGINAL",
+      "probe": "P1 dự báo nhiều ngày",
+      "question": "Dự báo thời tiết Đà Nẵng cả tuần tới thế nào?",
+      "expect_call": false,
+      "run": 3,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "ORIGINAL",
+      "probe": "P2 thiếu thành phố",
+      "question": "Thời tiết thế nào nhỉ?",
+      "expect_call": false,
+      "run": 1,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "ORIGINAL",
+      "probe": "P2 thiếu thành phố",
+      "question": "Thời tiết thế nào nhỉ?",
+      "expect_call": false,
+      "run": 2,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "ORIGINAL",
+      "probe": "P2 thiếu thành phố",
+      "question": "Thời tiết thế nào nhỉ?",
+      "expect_call": false,
+      "run": 3,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "ORIGINAL",
+      "probe": "P3 chung chung",
+      "question": "Hôm nay trời có đẹp để đi chơi không?",
+      "expect_call": false,
+      "run": 1,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "ORIGINAL",
+      "probe": "P3 chung chung",
+      "question": "Hôm nay trời có đẹp để đi chơi không?",
+      "expect_call": false,
+      "run": 2,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "ORIGINAL",
+      "probe": "P3 chung chung",
+      "question": "Hôm nay trời có đẹp để đi chơi không?",
+      "expect_call": false,
+      "run": 3,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "ORIGINAL",
+      "probe": "P4 đủ thông tin",
+      "question": "Hà Nội hôm nay có nên mang ô không?",
+      "expect_call": true,
+      "run": 1,
+      "called": true,
+      "cities": [
+        "Hà Nội"
+      ],
+      "error": null
+    },
+    {
+      "variant": "ORIGINAL",
+      "probe": "P4 đủ thông tin",
+      "question": "Hà Nội hôm nay có nên mang ô không?",
+      "expect_call": true,
+      "run": 2,
+      "called": true,
+      "cities": [
+        "Hà Nội"
+      ],
+      "error": null
+    },
+    {
+      "variant": "ORIGINAL",
+      "probe": "P4 đủ thông tin",
+      "question": "Hà Nội hôm nay có nên mang ô không?",
+      "expect_call": true,
+      "run": 3,
+      "called": true,
+      "cities": [
+        "Hà Nội"
+      ],
+      "error": null
+    },
+    {
+      "variant": "BROKEN",
+      "probe": "P1 dự báo nhiều ngày",
+      "question": "Dự báo thời tiết Đà Nẵng cả tuần tới thế nào?",
+      "expect_call": false,
+      "run": 1,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "BROKEN",
+      "probe": "P1 dự báo nhiều ngày",
+      "question": "Dự báo thời tiết Đà Nẵng cả tuần tới thế nào?",
+      "expect_call": false,
+      "run": 2,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "BROKEN",
+      "probe": "P1 dự báo nhiều ngày",
+      "question": "Dự báo thời tiết Đà Nẵng cả tuần tới thế nào?",
+      "expect_call": false,
+      "run": 3,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "BROKEN",
+      "probe": "P2 thiếu thành phố",
+      "question": "Thời tiết thế nào nhỉ?",
+      "expect_call": false,
+      "run": 1,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "BROKEN",
+      "probe": "P2 thiếu thành phố",
+      "question": "Thời tiết thế nào nhỉ?",
+      "expect_call": false,
+      "run": 2,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "BROKEN",
+      "probe": "P2 thiếu thành phố",
+      "question": "Thời tiết thế nào nhỉ?",
+      "expect_call": false,
+      "run": 3,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "BROKEN",
+      "probe": "P3 chung chung",
+      "question": "Hôm nay trời có đẹp để đi chơi không?",
+      "expect_call": false,
+      "run": 1,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "BROKEN",
+      "probe": "P3 chung chung",
+      "question": "Hôm nay trời có đẹp để đi chơi không?",
+      "expect_call": false,
+      "run": 2,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "BROKEN",
+      "probe": "P3 chung chung",
+      "question": "Hôm nay trời có đẹp để đi chơi không?",
+      "expect_call": false,
+      "run": 3,
+      "called": false,
+      "cities": [],
+      "error": null
+    },
+    {
+      "variant": "BROKEN",
+      "probe": "P4 đủ thông tin",
+      "question": "Hà Nội hôm nay có nên mang ô không?",
+      "expect_call": true,
+      "run": 1,
+      "called": true,
+      "cities": [
+        "Hà Nội"
+      ],
+      "error": null
+    },
+    {
+      "variant": "BROKEN",
+      "probe": "P4 đủ thông tin",
+      "question": "Hà Nội hôm nay có nên mang ô không?",
+      "expect_call": true,
+      "run": 2,
+      "called": true,
+      "cities": [
+        "Hà Nội"
+      ],
+      "error": null
+    },
+    {
+      "variant": "BROKEN",
+      "probe": "P4 đủ thông tin",
+      "question": "Hà Nội hôm nay có nên mang ô không?",
+      "expect_call": true,
+      "run": 3,
+      "called": true,
+      "cities": [
+        "Hà Nội"
+      ],
+      "error": null
+    }
+  ]
+}

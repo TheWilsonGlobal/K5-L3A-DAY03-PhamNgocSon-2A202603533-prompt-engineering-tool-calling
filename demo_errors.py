@@ -18,9 +18,12 @@ from __future__ import annotations
 import json
 
 from agent import run_agent
+from console import ensure_utf8_stdout
 from llm import MockModel
 from system_prompt import BROKEN_SYSTEM_PROMPT, SYSTEM_PROMPT
 from tools import execute_tool
+
+ensure_utf8_stdout()
 
 
 def banner(title: str) -> None:
@@ -102,9 +105,43 @@ def demo_control_flow_error() -> None:
     print("   FINAL:", t_ok.final_reply)
 
 
+# ---------------------------------------------------------------------------
+# LỖI 4 — CONTROL FLOW (biến thể): nhiều tool call trong một lượt bị ghi đè kết quả.
+# ---------------------------------------------------------------------------
+def run_agent_overwrite_broken(user_msg: str, model=None) -> str:
+    """Bản agent loop HỎNG (phiên bản trước khi sửa): ghi đè `resp` trong vòng for.
+    Mỗi tool call làm lại một lượt summarize, nên chỉ kết quả cuối được giữ lại."""
+    model = model or MockModel()
+    resp = model.decide(SYSTEM_PROMPT, user_msg, ["get_weather", "query_sales", "get_exchange_rate"])
+    while resp.wants_tool:
+        for call in resp.tool_calls:
+            result = execute_tool(call.name, call.arguments)
+            resp = model.summarize_tool_result(call.name, result, user_msg)  # BUG: ghi đè resp
+        # (vòng while kết thúc sau lượt này vì summarize trả về text)
+    return resp.text
+
+
+def demo_parallel_error() -> None:
+    banner("LỖI 4 — CONTROL FLOW: 2 tool call cùng lượt -> chỉ còn kết quả tool cuối")
+    q = "Thời tiết Hà Nội và tỷ giá USD sang VND hôm nay?"
+
+    print(">> SYMPTOM (vòng lặp ghi đè resp trong for — bản cũ):")
+    print("   FINAL:", run_agent_overwrite_broken(q))
+
+    print("\n>> DIAGNOSIS: model gọi ĐÚNG 2 tool (get_weather + get_exchange_rate), cả 2 chạy")
+    print("   đúng, nhưng vòng for gọi summarize MỘT LẦN MỖI tool và ghi đè `resp`. Câu trả")
+    print("   lời cuối chỉ còn tool chạy sau cùng: mất thông tin thời tiết. Đây là LỖI")
+    print("   CONTROL FLOW: không gom kết quả của cả lượt trước khi feed lại model.")
+
+    print("\n>> FIX (run_agent hiện tại — gom mọi kết quả, feed lại model MỘT lần):")
+    t_ok = run_agent(q, verbose=False)
+    print("   FINAL:", t_ok.final_reply)
+
+
 if __name__ == "__main__":
     demo_prompt_error()
     demo_tool_schema_error()
     demo_control_flow_error()
+    demo_parallel_error()
     print("\nTóm lại: cùng một câu hỏi có thể hỏng vì PROMPT, vì TOOL SCHEMA, hoặc vì")
     print("CONTROL FLOW. Chẩn đoán đúng NHÓM lỗi mới sửa đúng chỗ. Xem errors.md.")

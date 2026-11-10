@@ -6,7 +6,7 @@ result -> LLM final response. File này lo phần "LLM decides" và "LLM final".
 
 Mặc định dùng MockModel: một model GIẢ LẬP có luật quyết định (rule-based router)
 để lab CHẠY ĐƯỢC ngay, offline, kết quả tất định (dễ demo, dễ chấm). Ai có API key
-có thể chuyển sang model thật (Anthropic/OpenAI) — vòng lặp agent không đổi.
+có thể chuyển sang model thật (Gemini) — vòng lặp agent không đổi.
 
 Chuẩn hoá: mọi model trả về ModelResponse gồm:
   - text: câu trả lời trực tiếp (khi KHÔNG gọi tool), hoặc None
@@ -20,6 +20,10 @@ import os
 import re
 import time
 from dataclasses import dataclass, field
+
+from console import ensure_utf8_stdout
+
+ensure_utf8_stdout()
 
 
 @dataclass
@@ -65,6 +69,8 @@ class MockModel:
 
     _WEATHER_KW = ("thời tiết", "thoi tiet", "nhiệt độ", "nhiet do", "mưa", "nắng", "trời")
     _SALES_KW = ("doanh thu", "doanh số", "doanh so", "bán được", "revenue", "doanh_thu", "bán hàng")
+    _FX_KW = ("tỷ giá", "ty gia", "đổi tiền", "doi tien", "usd", "eur", "jpy", "vnd")
+    _FX_CODE_RE = re.compile(r"\b(usd|eur|jpy|vnd)\b", re.IGNORECASE)
     _FINANCE_KW = ("bitcoin", "cổ phiếu", "co phieu", "crypto", "đầu tư", "chứng khoán", "giá vàng")
     _CITIES = {
         "hà nội": "Hà Nội", "ha noi": "Hà Nội", "hanoi": "Hà Nội",
@@ -100,6 +106,18 @@ class MockModel:
                          "(⚠ bịa — model không có dữ liệu này)",
             }, ensure_ascii=False))
 
+        # (2a) Hai ý định trong MỘT câu (thời tiết + tỷ giá) -> NHIỀU tool call trong
+        # một lượt. Dùng để thử pattern parallel fetch + merge (bài tập mở rộng 1).
+        city_2a = self._extract_city(text)
+        fx_args = self._fx_args(text)
+        if (city_2a and fx_args and "get_weather" in tool_names
+                and "get_exchange_rate" in tool_names
+                and any(k in text for k in self._WEATHER_KW)):
+            return ModelResponse(tool_calls=[
+                ToolCall("get_weather", {"city": city_2a}, id="call_1"),
+                ToolCall("get_exchange_rate", fx_args, id="call_2"),
+            ])
+
         # (2) Ý định thời tiết.
         if any(k in text for k in self._WEATHER_KW) and "get_weather" in tool_names:
             city = self._extract_city(text)
@@ -123,6 +141,17 @@ class MockModel:
                 }, ensure_ascii=False))
             return ModelResponse(tool_calls=[ToolCall("query_sales", {"region": region})])
 
+        # (3b) Ý định tỷ giá.
+        if any(k in text for k in self._FX_KW) and "get_exchange_rate" in tool_names:
+            fx_args = self._fx_args(text)
+            if fx_args is None:
+                return ModelResponse(text=json.dumps({
+                    "intent": "hỏi tỷ giá nhưng thiếu loại tiền",
+                    "action": "direct",
+                    "reply": "Bạn muốn đổi từ loại tiền nào sang loại tiền nào (USD, EUR, JPY, VND)?",
+                }, ensure_ascii=False))
+            return ModelResponse(tool_calls=[ToolCall("get_exchange_rate", fx_args)])
+
         # (4) Chào hỏi / hỏi bạn là ai -> trả lời trực tiếp, không tool.
         if any(k in text for k in ("xin chào", "chào", "bạn là ai", "hello", "hi ")):
             return ModelResponse(text=json.dumps({
@@ -140,21 +169,47 @@ class MockModel:
         }, ensure_ascii=False))
 
     def summarize_tool_result(self, tool_name: str, tool_result: dict, user_msg: str) -> ModelResponse:
-        """Lượt 2 của model: biến tool result thành câu trả lời cuối (JSON contract)."""
-        if tool_result.get("status") == "error":
-            reply = f"Không lấy được dữ liệu: {tool_result.get('message')}."
-        elif tool_name == "get_weather":
-            d = tool_result["data"]
-            reply = f"Thời tiết {d['city']}: {d['temp_c']}°C, {d['condition']}."
-        elif tool_name == "query_sales":
-            d = tool_result["data"]
-            reply = (f"Doanh thu khu vực {d['region']} ({d['product']}, {d['month']}): "
-                     f"{d['total_revenue_usd']:,} USD, {d['total_units']:,} sản phẩm.")
+        """Lượt 2 của model với MỘT tool result (JSON contract)."""
+        return self.summarize_tool_results([(tool_name, tool_result)], user_msg)
+
+    def summarize_tool_results(self, results: list[tuple[str, dict]], user_msg: str) -> ModelResponse:
+        """Lượt 2 của model với TẤT CẢ tool result của một lượt (JSON contract)."""
+        if len(results) == 1:
+            action = results[0][0]
         else:
-            reply = "Đã có kết quả."
+            action = ",".join(name for name, _ in results)
+        reply = " | ".join(self._reply_for(name, res) for name, res in results)
         return ModelResponse(text=json.dumps({
-            "intent": user_msg, "action": tool_name, "reply": reply,
+            "intent": user_msg, "action": action, "reply": reply,
         }, ensure_ascii=False))
+
+    def _reply_for(self, tool_name: str, tool_result: dict) -> str:
+        if tool_result.get("status") == "error":
+            return f"Không lấy được dữ liệu ({tool_name}): {tool_result.get('message')}."
+        if tool_name == "get_weather":
+            d = tool_result["data"]
+            return f"Thời tiết {d['city']}: {d['temp_c']}°C, {d['condition']}."
+        if tool_name == "query_sales":
+            d = tool_result["data"]
+            return (f"Doanh thu khu vực {d['region']} ({d['product']}, {d['month']}): "
+                    f"{d['total_revenue_usd']:,} USD, {d['total_units']:,} sản phẩm.")
+        if tool_name == "get_exchange_rate":
+            d = tool_result["data"]
+            rate = f"{d['rate']:,.4f}".rstrip("0").rstrip(".")
+            return f"Tỷ giá: 1 {d['from']} = {rate} {d['to']}."
+        return "Đã có kết quả."
+
+    def _fx_args(self, text: str) -> dict | None:
+        """Trích (from, to) từ câu hỏi. 2 mã -> theo thứ tự xuất hiện; 1 mã -> đổi sang VND
+        (hoặc sang USD nếu mã đó đã là VND). Không có mã nào -> None."""
+        codes = [m.upper() for m in self._FX_CODE_RE.findall(text)]
+        if len(codes) >= 2:
+            return {"from_currency": codes[0], "to_currency": codes[1]}
+        if len(codes) == 1:
+            if codes[0] == "VND":
+                return {"from_currency": "VND", "to_currency": "USD"}
+            return {"from_currency": codes[0], "to_currency": "VND"}
+        return None
 
     def _extract_city(self, text: str) -> str | None:
         for key, name in self._CITIES.items():
@@ -175,14 +230,12 @@ class MockModel:
 # Vòng lặp agent.py hoạt động y hệt với các model này.
 # ---------------------------------------------------------------------------
 def get_model(name: str | None = None):
-    """Chọn model theo biến môi trường LAB_MODEL: mock | gemini | anthropic."""
+    """Chọn model theo biến môi trường LAB_MODEL: mock | gemini."""
     name = name or os.environ.get("LAB_MODEL", "mock")
     if name == "mock":
         return MockModel()
     if name == "gemini":
         return _GeminiModel()
-    if name == "anthropic":
-        return _AnthropicModel()
     raise ValueError(f"Model không hỗ trợ: {name}")
 
 
@@ -201,7 +254,8 @@ class _GeminiModel:
       - Model trả tool call ở resp.function_calls (mỗi cái có .name và .args).
     """
 
-    _MAX_RETRIES = 3
+    # 6 lần thử: free tier reset theo phút, mỗi lần chờ đúng retryDelay (~45–60s).
+    _MAX_RETRIES = 6
 
     def __init__(self, model: str | None = None):
         from google import genai            # import trễ để không bắt buộc cài đặt
@@ -212,15 +266,29 @@ class _GeminiModel:
         # Mặc định model preview mới nhất; nếu key chưa có quyền, đổi sang
         # 'gemini-2.5-flash' (ổn định) qua biến GEMINI_MODEL.
         self.model = model or os.environ.get("GEMINI_MODEL", "gemini-3-flash-preview")
+        self._last_call = 0.0
+
+    def _pace(self) -> None:
+        """Giữ khoảng cách tối thiểu giữa hai request (mặc định 4.5s ≈ 13 RPM).
+
+        Free tier giới hạn 15 RPM (một số model thấp hơn). Gọi liên tiếp không nghỉ
+        sẽ đụng trần ngay trong một lượt test; pacing ở đây bảo vệ mọi caller.
+        Chỉnh bằng GEMINI_MIN_GAP (giây), đặt 0 để tắt.
+        """
+        gap = float(os.environ.get("GEMINI_MIN_GAP", "4.5"))
+        wait = gap - (time.monotonic() - self._last_call)
+        if gap > 0 and wait > 0:
+            time.sleep(wait)
+        self._last_call = time.monotonic()
 
     def _call_with_retry(self, fn, *args, **kwargs):
-        """Gọi Gemini API với auto-retry khi bị rate limit (429).
+        """Gọi Gemini API với pacing + auto-retry khi bị rate limit (429).
 
-        Free tier giới hạn 5 RPM — khi chạy nhiều test liên tục dễ vượt quota.
-        Hàm này đọc retryDelay từ response rồi chờ đúng thời gian đó trước khi
-        thử lại, tối đa _MAX_RETRIES lần.
+        Đọc retryDelay từ response rồi chờ đúng thời gian đó trước khi thử lại,
+        tối đa _MAX_RETRIES lần.
         """
         for attempt in range(1, self._MAX_RETRIES + 1):
+            self._pace()
             try:
                 return fn(*args, **kwargs)
             except self._errors.ClientError as e:
@@ -270,6 +338,28 @@ class _GeminiModel:
             ])
         return ModelResponse(text=resp.text)
 
+    def summarize_tool_results(self, results, user_msg):
+        """Gửi TẤT CẢ kết quả của một lượt trong một lần gọi model (không ghi đè)."""
+        types = self._types
+        blocks = "\n".join(
+            f"- Tool {name}: {json.dumps(res, ensure_ascii=False)}" for name, res in results
+        )
+        action = ",".join(name for name, _ in results)
+        prompt = (
+            f"Câu hỏi người dùng: {user_msg}\n"
+            f"Kết quả các tool đã chạy:\n{blocks}\n"
+            "Tổng hợp MỌI kết quả trên vào một câu trả lời. Chỉ dựa trên kết quả tool, "
+            'trả về JSON đúng 3 field {"intent": "...", "action": "%s", "reply": "..."} '
+            "bằng tiếng Việt." % action
+        )
+        resp = self._call_with_retry(
+            self.client.models.generate_content,
+            model=self.model,
+            contents=prompt,
+            config=types.GenerateContentConfig(response_mime_type="application/json"),
+        )
+        return ModelResponse(text=resp.text)
+
     def summarize_tool_result(self, tool_name, tool_result, user_msg):
         types = self._types
         prompt = (
@@ -285,22 +375,3 @@ class _GeminiModel:
             config=types.GenerateContentConfig(response_mime_type="application/json"),
         )
         return ModelResponse(text=resp.text)
-
-
-class _AnthropicModel:
-    """Adapter tối giản cho Anthropic Messages (cần `pip install anthropic`)."""
-
-    def __init__(self, model: str = "claude-sonnet-4-5"):
-        import anthropic
-        self.client = anthropic.Anthropic()
-        self.model = model
-
-    def decide(self, system_prompt, user_msg, tool_names, tools_full=None):
-        # Anthropic dùng input_schema thay vì parameters — cần convert nếu dùng thật.
-        raise NotImplementedError(
-            "Ví dụ tham khảo: convert schema OpenAI -> Anthropic (input_schema) "
-            "rồi dùng content[i].type == 'tool_use'. Xem slide 'OpenAI vs Anthropic Format'."
-        )
-
-    def summarize_tool_result(self, tool_name, tool_result, user_msg):
-        raise NotImplementedError

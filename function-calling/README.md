@@ -200,6 +200,5 @@ while resp.function_calls:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**MCP giải quyết tất cả các vấn đề trên** → xem [02-mcp-basics/](../02-mcp-basics/)
-
-Bước tiếp theo: [02-mcp-basics/](../02-mcp-basics/) — tách tool ra MCP server độc lập.
+**MCP giải quyết tất cả các vấn đề trên** — tách tool ra MCP server độc lập.
+(Bài MCP chưa có trong repo Day 03 này; đây chỉ là ghi chú định hướng.)

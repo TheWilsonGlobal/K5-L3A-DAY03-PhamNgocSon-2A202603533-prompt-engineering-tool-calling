@@ -1,0 +1,82 @@
+[1/70] case 1 run 1: PASS
+[2/70] case 1 run 2: PASS
+[3/70] case 1 run 3: PASS
+[4/70] case 1 run 4: PASS
+[5/70] case 1 run 5: PASS
+[6/70] case 1 run 6: PASS
+[7/70] case 1 run 7: PASS
+[8/70] case 1 run 8: PASS
+[9/70] case 1 run 9: PASS
+[10/70] case 1 run 10: PASS
+[11/70] case 2 run 1: PASS
+[12/70] case 2 run 2: PASS
+[13/70] case 2 run 3: PASS
+[14/70] case 2 run 4: PASS
+[15/70] case 2 run 5: PASS
+[16/70] case 2 run 6: PASS
+[17/70] case 2 run 7: PASS
+[18/70] case 2 run 8: PASS
+[19/70] case 2 run 9: PASS
+[20/70] case 2 run 10: PASS
+[21/70] case 3 run 1: PASS
+[22/70] case 3 run 2: PASS
+[23/70] case 3 run 3: PASS
+[24/70] case 3 run 4: PASS
+[25/70] case 3 run 5: PASS
+[26/70] case 3 run 6: PASS
+[27/70] case 3 run 7: PASS
+[28/70] case 3 run 8: PASS
+[29/70] case 3 run 9: PASS
+[30/70] case 3 run 10: PASS
+[31/70] case 4 run 1: PASS
+[32/70] case 4 run 2: PASS
+[33/70] case 4 run 3: PASS
+[34/70] case 4 run 4: PASS
+[35/70] case 4 run 5: PASS
+[36/70] case 4 run 6: PASS
+[37/70] case 4 run 7: PASS
+[38/70] case 4 run 8: PASS
+[39/70] case 4 run 9: PASS
+[40/70] case 4 run 10: PASS
+[41/70] case 5 run 1: PASS
+[42/70] case 5 run 2: PASS
+[43/70] case 5 run 3: PASS
+[44/70] case 5 run 4: PASS
+[45/70] case 5 run 5: PASS
+[46/70] case 5 run 6: PASS
+[47/70] case 5 run 7: PASS
+[48/70] case 5 run 8: PASS
+[49/70] case 5 run 9: PASS
+[50/70] case 5 run 10: PASS
+[51/70] case 6 run 1: PASS
+[52/70] case 6 run 2: PASS
+[53/70] case 6 run 3: PASS
+[54/70] case 6 run 4: PASS
+[55/70] case 6 run 5: PASS
+[56/70] case 6 run 6: PASS
+[57/70] case 6 run 7: PASS
+[58/70] case 6 run 8: PASS
+[59/70] case 6 run 9: PASS
+[60/70] case 6 run 10: PASS
+[61/70] case 7 run 1: PASS
+[62/70] case 7 run 2: PASS
+[63/70] case 7 run 3: PASS
+[64/70] case 7 run 4: PASS
+[65/70] case 7 run 5: PASS
+[66/70] case 7 run 6: PASS
+[67/70] case 7 run 7: PASS
+[68/70] case 7 run 8: PASS
+[69/70] case 7 run 9: PASS
+[70/70] case 7 run 10: PASS
+
+======================================================================
+MODEL: gemini-3.5-flash-lite  (MODEL THẬT)
+  case 1: 10/10 = 100%  [OK ]
+  case 2: 10/10 = 100%  [OK ]
+  case 3: 10/10 = 100%  [OK ]
+  case 4: 10/10 = 100%  [OK ]
+  case 5: 10/10 = 100%  [OK ]
+  case 6: 10/10 = 100%  [OK ]
+  case 7: 10/10 = 100%  [OK ]
+TỔNG: 100% (đạt ngưỡng 90%)
+Đã lưu: C:\Git\ACAs\VIN-AIA-SRC\Lab\K5-L3A-DAY03-PhamNgocSon-2A202603533-prompt-engineering-tool-calling\results\consistency-gemini-2026-11-10.json
